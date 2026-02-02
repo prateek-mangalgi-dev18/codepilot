@@ -9,9 +9,14 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@mistralai/mistralai": "^1.13.0",
+    "@tailwindcss/typography": "^0.5.19",
     "next": "16.1.6",
+    "prismjs": "^1.30.0",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "react-markdown": "^10.1.0",
+    "rehype-prism-plus": "^2.0.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

@@ -4,39 +4,59 @@ import { useState, useRef, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import rehypePrism from "rehype-prism-plus";
 
+
+type Role = "user" | "bot";
+
 type Message = {
-  role: "user" | "bot";
+  role: Role;
   content: string;
   time: string;
 };
+
 
 export default function Home() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  /* ---------------- LOAD CHAT FROM STORAGE ---------------- */
+
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+
+
+  useEffect(() => {
+    if (!mounted) return;
+
     const saved = localStorage.getItem("codepilot-chat");
     if (saved) {
       setMessages(JSON.parse(saved));
     }
-  }, []);
+  }, [mounted]);
 
-  /* ---------------- SAVE CHAT TO STORAGE ---------------- */
+
+
   useEffect(() => {
+    if (!mounted) return;
+
     localStorage.setItem("codepilot-chat", JSON.stringify(messages));
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, mounted]);
+
+
 
   function getTime() {
     return new Date().toLocaleTimeString([], {
       hour: "2-digit",
-      minute: "2-digit"
+      minute: "2-digit",
     });
   }
+
+ 
 
   async function sendMessage() {
     if (!input.trim() || loading) return;
@@ -45,40 +65,52 @@ export default function Home() {
     setInput("");
     setLoading(true);
 
-    const updated = [
+    const updatedMessages: Message[] = [
       ...messages,
-      { role: "user", content: userText, time: getTime() }
+      { role: "user", content: userText, time: getTime() },
     ];
 
-    setMessages(updated);
+    setMessages(updatedMessages);
 
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: userText })
+        body: JSON.stringify({ message: userText }),
       });
 
       const data = await res.json();
 
       setMessages([
-        ...updated,
-        { role: "bot", content: data.reply, time: getTime() }
+        ...updatedMessages,
+        {
+          role: "bot",
+          content: data.reply || "No response",
+          time: getTime(),
+        },
       ]);
     } catch {
       setMessages([
-        ...updated,
-        { role: "bot", content: "Server error.", time: getTime() }
+        ...updatedMessages,
+        {
+          role: "bot",
+          content: "Server error.",
+          time: getTime(),
+        },
       ]);
     }
 
     setLoading(false);
   }
 
+ 
+
   function clearChat() {
     setMessages([]);
     localStorage.removeItem("codepilot-chat");
   }
+
+ 
 
   function CopyButton({ text }: { text: string }) {
     const [copied, setCopied] = useState(false);
@@ -96,6 +128,10 @@ export default function Home() {
       </button>
     );
   }
+
+
+
+  if (!mounted) return null;
 
   return (
     <main className="min-h-screen bg-[#0f1724] flex items-center justify-center">
@@ -115,12 +151,12 @@ export default function Home() {
           </button>
         </div>
 
-        {/* MESSAGES */}
+       
         <div className="flex-1 overflow-y-auto px-5 py-4 space-y-5">
 
           {messages.length === 0 && (
             <div className="text-gray-400 text-center mt-10">
-              Ask a coding question to begin 🚀
+              Ask a coding question to begin!
             </div>
           )}
 
@@ -133,9 +169,7 @@ export default function Home() {
             >
               <div
                 className={`max-w-[80%] px-4 py-3 rounded-2xl ${
-                  m.role === "user"
-                    ? "bg-blue-600"
-                    : "bg-gray-800"
+                  m.role === "user" ? "bg-blue-600" : "bg-gray-800"
                 }`}
               >
                 {m.role === "bot" ? (
@@ -163,7 +197,7 @@ export default function Home() {
                               </pre>
                             </div>
                           );
-                        }
+                        },
                       }}
                     >
                       {m.content}
@@ -189,7 +223,7 @@ export default function Home() {
           <div ref={bottomRef} />
         </div>
 
-        {/* INPUT BAR */}
+        
         <div className="sticky bottom-0 bg-[#061122] border-t border-gray-800 px-4 py-3 flex gap-3">
 
           <textarea
@@ -221,7 +255,7 @@ export default function Home() {
 
       </div>
 
-      {/* MARKDOWN STYLES */}
+      
       <style jsx global>{`
         .markdown h1 { font-size: 1.2rem; font-weight: 700; margin-top: .6rem; }
         .markdown h2 { font-size: 1.05rem; font-weight: 600; margin-top: .6rem; }

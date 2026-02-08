@@ -3,8 +3,45 @@
 
 /* Base colors */
 body {
-  background-color: #0f1724;
+  background-color: #020617;
   color: #e5e7eb;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #020617;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+
+/* Animations */
+@keyframes text {
+
+  0%,
+  100% {
+    background-size: 200% 200%;
+    background-position: left center;
+  }
+
+  50% {
+    background-size: 200% 200%;
+    background-position: right center;
+  }
+}
+
+.animate-text {
+  animation: text 5s ease infinite;
 }
 
 /* Markdown Styling */
@@ -42,4 +79,37 @@ body {
 
 .markdown code {
   font-size: 0.9rem;
+}
+
+/* Table Styling */
+.markdown table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.9rem;
+}
+
+.markdown th,
+.markdown td {
+  border: 1px solid #334155;
+  padding: 0.5rem 1rem;
+  text-align: left;
+}
+
+.markdown th {
+  background-color: #1e293b;
+  font-weight: 600;
+  color: #f8fafc;
+}
+
+.markdown td {
+  color: #cbd5e1;
+}
+
+.markdown tr:nth-child(even) {
+  background-color: #0f1724;
+}
+
+.markdown tr:hover {
+  background-color: #1e293b;
 }

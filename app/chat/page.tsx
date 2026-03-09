@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useRef, useEffect, memo } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import rehypePrism from "rehype-prism-plus";
 import remarkGfm from "remark-gfm";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, Trash2, Copy, Check, Terminal } from "lucide-react";
+import { Send, Trash2, Copy, Check, Terminal, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
@@ -32,7 +32,7 @@ function CopyButton({ getText }: { getText: () => string }) {
     return (
         <button
             onClick={handleCopy}
-            className="flex items-center gap-1 text-xs text-gray-400 hover:text-white transition-colors"
+            className="flex items-center gap-1 text-xs text-neutral-500 hover:text-white transition-colors"
             title="Copy Code"
         >
             {copied ? <Check size={14} className="text-green-400" /> : <Copy size={14} />}
@@ -41,12 +41,9 @@ function CopyButton({ getText }: { getText: () => string }) {
     );
 }
 
-// Extracted CodeBlock component to handle Ref and Copy logic properly
+// Extracted CodeBlock component
 const CodeBlock = ({ children, className }: any) => {
     const preRef = useRef<HTMLPreElement>(null);
-
-    // Extract language from className (e.g., "language-js")
-    // default to "code" if not found
     const lang = (className || "").replace("language-", "") || "code";
 
     const getCodeText = () => {
@@ -55,14 +52,14 @@ const CodeBlock = ({ children, className }: any) => {
     };
 
     return (
-        <div className="my-4 rounded-xl overflow-hidden border border-white/10 shadow-lg">
-            <div className="flex justify-between items-center bg-[#0f1724] px-4 py-2 text-xs text-gray-400 border-b border-white/5">
-                <span className="uppercase font-mono">{lang}</span>
+        <div className="my-6 rounded-xl overflow-hidden border border-white/5 bg-[#0d0d0d] shadow-2xl">
+            <div className="flex justify-between items-center bg-[#111111] px-4 py-2 text-[10px] text-neutral-500 border-b border-white/5 uppercase tracking-widest font-mono">
+                <span>{lang}</span>
                 <CopyButton getText={getCodeText} />
             </div>
             <pre
                 ref={preRef}
-                className={cn("!m-0 !p-4 !bg-[#0b1220] overflow-x-auto text-sm", className)}
+                className={cn("!m-0 !p-6 !bg-transparent overflow-x-auto text-sm leading-relaxed", className)}
             >
                 {children}
             </pre>
@@ -150,66 +147,70 @@ export default function ChatPage() {
     }
 
     function clearChat() {
-        setMessages([]);
-        localStorage.removeItem("codepilot-chat");
+        if (confirm("Clear all messages?")) {
+            setMessages([]);
+            localStorage.removeItem("codepilot-chat");
+        }
     }
 
     if (!mounted) return null;
 
     return (
-        <main className="min-h-screen bg-[#020617] text-white flex flex-col font-sans selection:bg-sky-500/30">
-
-            {/* Background Grid */}
-            <div className="fixed inset-0 bg-[url('/grid.svg')] bg-center opacity-20 pointer-events-none" />
+        <main className="min-h-screen bg-[#0a0a0a] text-neutral-200 flex flex-col font-sans selection:bg-white/10">
 
             {/* HEADER */}
-            <header className="sticky top-0 z-50 backdrop-blur-xl bg-[#020617]/80 border-b border-white/5 mx-auto w-full max-w-5xl px-6 py-4 flex items-center justify-between mt-4 rounded-2xl md:mt-6">
-                <div className="flex items-center gap-4">
-                    <button
-                        onClick={() => router.back()}
-                        className="p-2 text-gray-400 hover:text-white transition-colors rounded-lg hover:bg-white/5 active:scale-95 text-xl font-bold"
-                        title="Go Back"
-                    >
-                        &lt;-
-                    </button>
-                    <Link href="/" className="flex items-center gap-2 group">
-                        <div className="relative flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-sky-500 to-indigo-600 text-white font-bold shadow-lg shadow-sky-500/20 group-hover:shadow-sky-500/40 transition-all duration-300">
-                            <span className="text-sm">CP</span>
-                        </div>
-                        <span className="font-bold text-lg tracking-tight text-white/90 group-hover:text-white transition-colors">
-                            CodePilot
-                        </span>
-                    </Link>
-                </div>
+            <header className="sticky top-0 z-50 backdrop-blur-xl bg-[#0a0a0a]/80 border-b border-white/5 w-full">
+                <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
+                    <div className="flex items-center gap-6">
+                        <button
+                            onClick={() => router.back()}
+                            className="flex items-center gap-2 text-neutral-400 hover:text-white transition-all group px-2 py-1 -ml-2 rounded-lg hover:bg-white/5"
+                        >
+                            <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
+                            <span className="text-sm font-medium">Back</span>
+                        </button>
 
-                <button
-                    onClick={clearChat}
-                    className="p-2 text-gray-400 hover:text-red-400 transition-colors rounded-lg hover:bg-white/5 active:scale-95"
-                    title="Clear Chat"
-                >
-                    <Trash2 size={18} />
-                </button>
+                        <div className="h-4 w-[1px] bg-white/10 hidden sm:block" />
+
+                        <Link href="/" className="flex items-center gap-2 group">
+                            <div className="h-6 w-6 rounded bg-white flex items-center justify-center font-bold text-black text-[9px] transition-transform group-hover:scale-105">
+                                CP
+                            </div>
+                            <span className="font-semibold text-base tracking-tight text-white/90 group-hover:text-white transition-colors">
+                                CodePilot
+                            </span>
+                        </Link>
+                    </div>
+
+                    <button
+                        onClick={clearChat}
+                        className="p-2 text-neutral-500 hover:text-red-400 transition-colors rounded-lg hover:bg-white/5 active:scale-95"
+                        title="Clear Chat"
+                    >
+                        <Trash2 size={18} />
+                    </button>
+                </div>
             </header>
 
             {/* CHAT CONTAINER */}
-            <div className="flex-1 w-full max-w-4xl mx-auto px-4 py-8 pb-32">
-                <div className="space-y-6">
-                    <AnimatePresence>
+            <div className="flex-1 w-full max-w-4xl mx-auto px-6 py-12 pb-32">
+                <div className="space-y-10">
+                    <AnimatePresence mode="popLayout">
                         {messages.length === 0 && (
                             <motion.div
-                                initial={{ opacity: 0, y: 20 }}
+                                initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0 }}
                                 className="flex flex-col items-center justify-center min-h-[50vh] text-center"
                             >
-                                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-sky-500/20 to-indigo-600/20 flex items-center justify-center mb-6">
-                                    <Terminal className="w-8 h-8 text-sky-400" />
+                                <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center mb-8">
+                                    <Terminal className="w-6 h-6 text-neutral-300" />
                                 </div>
-                                <h2 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent mb-2">
-                                    Ready to code?
+                                <h2 className="text-3xl font-bold text-white mb-3 tracking-tight">
+                                    How can I help you today?
                                 </h2>
-                                <p className="text-gray-400">
-                                    Ask me anything about your project.
+                                <p className="text-neutral-500 max-w-sm leading-relaxed">
+                                    Ask anything about code, logic, or system design. CodePilot is built for speed and precision.
                                 </p>
                             </motion.div>
                         )}
@@ -217,38 +218,45 @@ export default function ChatPage() {
                         {messages.map((m, i) => (
                             <motion.div
                                 key={i}
-                                initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                initial={{ opacity: 0, y: 8 }}
+                                animate={{ opacity: 1, y: 0 }}
                                 layout
                                 className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
                             >
                                 <div
                                     className={cn(
-                                        "max-w-[85%] md:max-w-[75%] px-5 py-4 rounded-3xl backdrop-blur-sm shadow-xl",
-                                        m.role === "user"
-                                            ? "bg-gradient-to-br from-sky-600 to-indigo-600 text-white rounded-br-none"
-                                            : "bg-white/5 border border-white/5 text-gray-200 rounded-bl-none"
+                                        "max-w-[90%] md:max-w-[80%]",
+                                        m.role === "user" ? "flex flex-col items-end" : "flex flex-col items-start"
                                     )}
                                 >
-                                    {m.role === "bot" ? (
-                                        <div className="markdown prose prose-invert max-w-none prose-pre:bg-transparent prose-pre:p-0 prose-pre:m-0 prose-code:text-sky-300">
-                                            <ReactMarkdown
-                                                remarkPlugins={[remarkGfm]}
-                                                rehypePlugins={[rehypePrism]}
-                                                components={{
-                                                    pre: CodeBlock
-                                                }}
-                                            >
-                                                {m.content}
-                                            </ReactMarkdown>
-                                        </div>
-                                    ) : (
-                                        <div className="whitespace-pre-wrap">{m.content}</div>
-                                    )}
+                                    <div
+                                        className={cn(
+                                            "px-5 py-4 rounded-2xl text-[15px] leading-relaxed shadow-sm",
+                                            m.role === "user"
+                                                ? "bg-white text-black font-medium"
+                                                : "bg-[#141414] border border-white/5 text-neutral-300"
+                                        )}
+                                    >
+                                        {m.role === "bot" ? (
+                                            <div className="markdown prose prose-invert max-w-none prose-neutral">
+                                                <ReactMarkdown
+                                                    remarkPlugins={[remarkGfm]}
+                                                    rehypePlugins={[rehypePrism]}
+                                                    components={{
+                                                        pre: CodeBlock
+                                                    }}
+                                                >
+                                                    {m.content}
+                                                </ReactMarkdown>
+                                            </div>
+                                        ) : (
+                                            <div className="whitespace-pre-wrap">{m.content}</div>
+                                        )}
+                                    </div>
 
                                     <div className={cn(
-                                        "text-[10px] mt-2 opacity-50",
-                                        m.role === "user" ? "text-sky-200 text-right" : "text-gray-500"
+                                        "text-[10px] mt-2 font-mono tracking-tighter opacity-30",
+                                        m.role === "user" ? "text-right" : "text-left"
                                     )}>
                                         {m.time}
                                     </div>
@@ -258,14 +266,14 @@ export default function ChatPage() {
 
                         {loading && (
                             <motion.div
-                                initial={{ opacity: 0, y: 10 }}
+                                initial={{ opacity: 0, y: 8 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 className="flex justify-start"
                             >
-                                <div className="bg-white/5 border border-white/5 px-4 py-3 rounded-3xl rounded-bl-none flex gap-1 items-center">
-                                    <span className="w-2 h-2 rounded-full bg-sky-500 animate-bounce" style={{ animationDelay: "0ms" }} />
-                                    <span className="w-2 h-2 rounded-full bg-sky-500 animate-bounce" style={{ animationDelay: "150ms" }} />
-                                    <span className="w-2 h-2 rounded-full bg-sky-500 animate-bounce" style={{ animationDelay: "300ms" }} />
+                                <div className="bg-[#141414] border border-white/5 px-5 py-4 rounded-2xl flex gap-1.5 items-center">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-neutral-600 animate-pulse" style={{ animationDelay: "0ms" }} />
+                                    <span className="w-1.5 h-1.5 rounded-full bg-neutral-600 animate-pulse" style={{ animationDelay: "200ms" }} />
+                                    <span className="w-1.5 h-1.5 rounded-full bg-neutral-600 animate-pulse" style={{ animationDelay: "400ms" }} />
                                 </div>
                             </motion.div>
                         )}
@@ -275,15 +283,13 @@ export default function ChatPage() {
             </div>
 
             {/* INPUT AREA */}
-            <div className="fixed bottom-6 left-0 right-0 px-4">
-                <div className="max-w-3xl mx-auto relative group">
-                    <div className="absolute inset-0 bg-gradient-to-r from-sky-500/20 to-indigo-500/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-
-                    <div className="relative flex items-center bg-[#0f1724]/80 backdrop-blur-xl border border-white/10 rounded-full shadow-2xl overflow-hidden focus-within:border-sky-500/50 focus-within:ring-1 focus-within:ring-sky-500/50 transition-all">
+            <div className="fixed bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a] to-transparent pointer-events-none">
+                <div className="max-w-3xl mx-auto pointer-events-auto">
+                    <div className="relative flex items-center bg-[#111111] border border-white/5 rounded-2xl shadow-2xl focus-within:border-white/20 transition-all px-2 py-2">
                         <input
                             disabled={loading}
-                            className="flex-1 bg-transparent px-6 py-4 text-white placeholder-gray-500 focus:outline-none disabled:opacity-50"
-                            placeholder="Ask a coding question..."
+                            className="flex-1 bg-transparent pl-4 pr-2 py-3 text-white placeholder-neutral-600 focus:outline-none disabled:opacity-50 text-[15px]"
+                            placeholder="Message CodePilot..."
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             onKeyDown={(e) => {
@@ -296,14 +302,14 @@ export default function ChatPage() {
                         <button
                             disabled={loading || !input.trim()}
                             onClick={sendMessage}
-                            className="mr-2 p-2 rounded-full bg-sky-600 hover:bg-sky-500 text-white disabled:opacity-50 disabled:bg-white/5 disabled:text-gray-500 transition-all active:scale-95"
+                            className="p-3 rounded-xl bg-white text-black hover:bg-neutral-200 disabled:opacity-0 disabled:scale-90 transition-all active:scale-95"
                         >
                             <Send size={18} />
                         </button>
                     </div>
 
-                    <div className="text-center mt-3 text-xs text-gray-500">
-                        AI can make mistakes. Please review the code.
+                    <div className="text-center mt-4 text-[11px] text-neutral-600 tracking-tight">
+                        Built for speed. Use <kbd className="px-1 py-0.5 rounded border border-white/10 bg-white/5">Enter</kbd> to ship.
                     </div>
                 </div>
             </div>

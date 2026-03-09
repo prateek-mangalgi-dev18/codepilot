@@ -1,10 +1,19 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React from "react";
 import Link from "next/link";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 
 export default function Hero() {
+    const scrollToFeatures = (e: React.MouseEvent) => {
+        e.preventDefault();
+        const element = document.getElementById('features');
+        if (element) {
+            const top = element.getBoundingClientRect().top + window.scrollY - 80;
+            window.scrollTo({ top, behavior: 'smooth' });
+        }
+    };
+
     return (
         <section className="relative min-h-screen flex flex-col items-center justify-center pt-20 pb-20 overflow-hidden bg-[#0a0a0a]">
             {/* Very Subtle Background Detail */}
@@ -38,7 +47,7 @@ export default function Hero() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.2 }}
-                    className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20"
+                    className="flex flex-col sm:flex-row items-center justify-center gap-4"
                 >
                     <Link
                         href="/chat"
@@ -46,12 +55,13 @@ export default function Hero() {
                     >
                         Start coding
                     </Link>
-                    <Link
+                    <a
                         href="#features"
-                        className="h-12 px-8 rounded-full border border-white/10 text-neutral-400 font-medium flex items-center justify-center hover:text-white hover:bg-white/5 transition-all"
+                        onClick={scrollToFeatures}
+                        className="h-12 px-8 rounded-full border border-white/10 text-neutral-400 font-medium flex items-center justify-center hover:text-white hover:bg-white/5 transition-all cursor-pointer"
                     >
                         View features
-                    </Link>
+                    </a>
                 </motion.div>
             </div>
         </section>

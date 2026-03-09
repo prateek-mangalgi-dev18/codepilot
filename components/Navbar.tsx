@@ -18,6 +18,16 @@ export default function Navbar() {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
+    const scrollToFeatures = (e: React.MouseEvent) => {
+        e.preventDefault();
+        setIsMobileMenuOpen(false);
+        const element = document.getElementById('features');
+        if (element) {
+            const top = element.getBoundingClientRect().top + window.scrollY - 80;
+            window.scrollTo({ top, behavior: 'smooth' });
+        }
+    };
+
     return (
         <>
             <motion.nav
@@ -42,7 +52,13 @@ export default function Navbar() {
 
                     {/* Desktop Links - Minimal */}
                     <div className="hidden md:flex items-center gap-8">
-                        <Link href="#features" className="text-sm font-medium text-neutral-400 hover:text-white transition-colors">Features</Link>
+                        <a
+                            href="#features"
+                            onClick={scrollToFeatures}
+                            className="text-sm font-medium text-neutral-400 hover:text-white transition-colors cursor-pointer"
+                        >
+                            Features
+                        </a>
                         <Link
                             href="/chat"
                             className="inline-flex h-9 items-center justify-center rounded-full bg-white px-5 text-sm font-semibold text-black transition-all hover:bg-neutral-200 active:scale-95"
@@ -71,7 +87,13 @@ export default function Navbar() {
                         className="fixed inset-x-0 top-[60px] z-40 bg-[#0a0a0a]/95 p-6 backdrop-blur-2xl md:hidden border-b border-white/5"
                     >
                         <div className="flex flex-col gap-6">
-                            <Link href="#features" className="text-lg font-medium text-neutral-400" onClick={() => setIsMobileMenuOpen(false)}>Features</Link>
+                            <a
+                                href="#features"
+                                onClick={scrollToFeatures}
+                                className="text-lg font-medium text-neutral-400 cursor-pointer"
+                            >
+                                Features
+                            </a>
                             <Link
                                 href="/chat"
                                 className="rounded-full bg-white py-3 text-center font-bold text-black"

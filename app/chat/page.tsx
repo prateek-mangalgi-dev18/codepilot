@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, memo } from "react";
+import { useRouter } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import rehypePrism from "rehype-prism-plus";
 import remarkGfm from "remark-gfm";
@@ -70,6 +71,7 @@ const CodeBlock = ({ children, className }: any) => {
 };
 
 export default function ChatPage() {
+    const router = useRouter();
     const [input, setInput] = useState("");
     const [messages, setMessages] = useState<Message[]>([]);
     const [loading, setLoading] = useState(false);
@@ -162,14 +164,23 @@ export default function ChatPage() {
 
             {/* HEADER */}
             <header className="sticky top-0 z-50 backdrop-blur-xl bg-[#020617]/80 border-b border-white/5 mx-auto w-full max-w-5xl px-6 py-4 flex items-center justify-between mt-4 rounded-2xl md:mt-6">
-                <Link href="/" className="flex items-center gap-2 group">
-                    <div className="relative flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-sky-500 to-indigo-600 text-white font-bold shadow-lg shadow-sky-500/20 group-hover:shadow-sky-500/40 transition-all duration-300">
-                        <span className="text-sm">CP</span>
-                    </div>
-                    <span className="font-bold text-lg tracking-tight text-white/90 group-hover:text-white transition-colors">
-                        CodePilot
-                    </span>
-                </Link>
+                <div className="flex items-center gap-4">
+                    <button
+                        onClick={() => router.back()}
+                        className="p-2 text-gray-400 hover:text-white transition-colors rounded-lg hover:bg-white/5 active:scale-95 text-xl font-bold"
+                        title="Go Back"
+                    >
+                        &lt;-
+                    </button>
+                    <Link href="/" className="flex items-center gap-2 group">
+                        <div className="relative flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-sky-500 to-indigo-600 text-white font-bold shadow-lg shadow-sky-500/20 group-hover:shadow-sky-500/40 transition-all duration-300">
+                            <span className="text-sm">CP</span>
+                        </div>
+                        <span className="font-bold text-lg tracking-tight text-white/90 group-hover:text-white transition-colors">
+                            CodePilot
+                        </span>
+                    </Link>
+                </div>
 
                 <button
                     onClick={clearChat}

@@ -1,115 +1,141 @@
 @import "tailwindcss";
 @import "prismjs/themes/prism-tomorrow.css";
 
-/* Base colors */
-body {
-  background-color: #020617;
-  color: #e5e7eb;
+@theme {
+  --color-brand-primary: #ffffff;
+  --color-brand-secondary: #a3a3a3;
+  --color-bg-main: #0a0a0a;
+  --color-bg-card: #141414;
+  --color-border-subtle: rgba(255, 255, 255, 0.08);
 }
 
-/* Custom Scrollbar */
+/* Base styles */
+:root {
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+section {
+  scroll-margin-top: 80px;
+}
+
+body {
+  background-color: var(--color-bg-main);
+  color: #d4d4d4;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom Scrollbar - Refined */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #020617;
+  background: var(--color-bg-main);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
-  border-radius: 5px;
+  background: #262626;
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: #404040;
 }
 
-/* Animations */
-@keyframes text {
-
-  0%,
-  100% {
-    background-size: 200% 200%;
-    background-position: left center;
-  }
-
-  50% {
-    background-size: 200% 200%;
-    background-position: right center;
-  }
+/* Typography Enhancements */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #ffffff;
+  letter-spacing: -0.02em;
 }
 
-.animate-text {
-  animation: text 5s ease infinite;
-}
-
-/* Markdown Styling */
+/* Markdown Styling - More refined spacing and weights */
 .markdown h1 {
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   font-weight: 700;
-  margin-top: 1rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
 }
 
 .markdown h2 {
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   font-weight: 600;
-  margin-top: 1rem;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
 }
 
 .markdown p {
-  margin: 0.4rem 0;
+  margin: 0.75rem 0;
+  line-height: 1.6;
 }
 
 .markdown ul {
   list-style: disc;
-  padding-left: 1.2rem;
+  padding-left: 1.5rem;
+  margin: 1rem 0;
 }
 
 .markdown li {
-  margin: 0.2rem 0;
+  margin: 0.4rem 0;
 }
 
 .markdown pre {
-  background: #0b1220;
-  padding: 1rem;
-  border-radius: 0.5rem;
+  background: #111111;
+  padding: 1.25rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-border-subtle);
   overflow-x: auto;
+  margin: 1.5rem 0;
 }
 
 .markdown code {
-  font-size: 0.9rem;
+  font-size: 0.875rem;
+  font-family: "JetBrains Mono", "Fira Code", monospace;
 }
 
-/* Table Styling */
+/* Table Styling - Minimalist */
 .markdown table {
   width: 100%;
-  border-collapse: collapse;
-  margin: 1rem 0;
-  font-size: 0.9rem;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 1.5rem 0;
+  font-size: 0.875rem;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 0.5rem;
+  overflow: hidden;
 }
 
 .markdown th,
 .markdown td {
-  border: 1px solid #334155;
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1rem;
   text-align: left;
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
 .markdown th {
-  background-color: #1e293b;
+  background-color: #171717;
   font-weight: 600;
-  color: #f8fafc;
+  color: #ffffff;
 }
 
 .markdown td {
-  color: #cbd5e1;
+  color: #a3a3a3;
 }
 
-.markdown tr:nth-child(even) {
-  background-color: #0f1724;
+.markdown tr:last-child td {
+  border-bottom: none;
 }
 
 .markdown tr:hover {
-  background-color: #1e293b;
+  background-color: rgba(255, 255, 255, 0.02);
 }

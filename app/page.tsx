@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-[#020617] text-white flex flex-col font-sans selection:bg-sky-500/30">
+    <div className="min-h-screen bg-[#0a0a0a] text-white flex flex-col font-sans selection:bg-white/10">
 
       {/* NAVBAR */}
       <Navbar />
